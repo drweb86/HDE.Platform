@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HDE.Platform.Wpf
+namespace HDE.Platform.Wpf.Commands
 {
     public class ViewModelActionCommand<TViewModel> : ViewModelCommand<TViewModel>
     {

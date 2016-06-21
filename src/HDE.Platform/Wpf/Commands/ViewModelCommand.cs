@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace HDE.Platform.Wpf
+namespace HDE.Platform.Wpf.Commands
 {
     public abstract class ViewModelCommand<TViewModel> : ICommand
     {

@@ -42,11 +42,16 @@
     <AssemblyOriginatorKeyFile>Platform.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Input.Manipulations" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AspectOrientedFramework\BaseController.cs" />
@@ -80,8 +85,14 @@
     <Compile Include="Serialization\SerializerHelper.cs" />
     <Compile Include="Services\ApplicationSingleInstancePerUser.cs" />
     <Compile Include="Services\SettingsService.cs" />
-    <Compile Include="Wpf\ViewModelActionCommand.cs" />
-    <Compile Include="Wpf\ViewModelCommand.cs" />
+    <Compile Include="Wpf\Commands\AsyncCommand.cs" />
+    <Compile Include="Wpf\Commands\AsyncCommandBase.cs" />
+    <Compile Include="Wpf\Commands\DelegateCommand.cs" />
+    <Compile Include="Wpf\Commands\IAsyncCommand.cs" />
+    <Compile Include="Wpf\Commands\ViewModelActionCommand.cs" />
+    <Compile Include="Wpf\Commands\ViewModelCommand.cs" />
+    <Compile Include="Wpf\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Wpf\NotifyTaskCompletion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Platform.snk" />
