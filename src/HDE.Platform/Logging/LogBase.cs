@@ -57,11 +57,6 @@ namespace HDE.Platform.Logging
             IsOpened = true;
         }
 
-        public void Write(LoggingEvent loggingEvent, string message, params object[] arguments)
-        {
-            Write(loggingEvent, string.Format(CultureInfo.CurrentCulture, message, arguments));
-        }
-
         public void Write(LoggingEvent loggingEvent, string message)
         {
             if (!string.IsNullOrEmpty(message))
@@ -76,19 +71,9 @@ namespace HDE.Platform.Logging
             Write(LoggingEvent.Debug, message);
         }
 
-        public void Debug(string message, params object[] args)
-        {
-            Write(LoggingEvent.Debug, message, args);
-        }
-
         public void Info(string message)
         {
             Write(LoggingEvent.Info, message);
-        }
-
-        public void Info(string message, params object[] args)
-        {
-            Write(LoggingEvent.Info, message, args);
         }
 
         public void Error(Exception unhandledException)
@@ -104,19 +89,9 @@ namespace HDE.Platform.Logging
             Write(LoggingEvent.Error, message);
         }
 
-        public void Error(string message, params object[] args)
-        {
-            Write(LoggingEvent.Error, message, args);
-        }
-
         public void Warning(string message)
         {
             Write(LoggingEvent.Warning, message);
-        }
-
-        public void Warning(string message, params object[] args)
-        {
-            Write(LoggingEvent.Warning, message, args);
         }
 
         public void Dispose()
