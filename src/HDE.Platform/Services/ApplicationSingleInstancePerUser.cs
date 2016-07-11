@@ -3,49 +3,51 @@ using System.Threading;
 
 namespace HDE.Platform.Services
 {
+    public enum ApplicationSingleInstanceMode
+    {
+        CurrentUserSession,
+        AllSessionsOfCurrentUser,
+        Pc
+    }
+
     public class ApplicationSingleInstancePerUser: IDisposable
     {
-        #region Internal Fields
-
-        private readonly bool _firstInstance;
-        private readonly Mutex _mutex;
-
-        #endregion
-
-        #region Public Properties
+        private readonly EventWaitHandle _event;
 
         /// <summary>
         /// Shows if the current instance of ghost is the first
         /// </summary>
-        public bool FirstInstance
-        {
-            get { return _firstInstance; }
-        }
+        public bool FirstInstance { get; private set; }
 
-        #endregion
-
-        public ApplicationSingleInstancePerUser(string applicationName)
+        /// <summary>
+        /// Initializes 
+        /// </summary>
+        /// <param name="applicationName">The application name</param>
+        /// <param name="mode">The single mode</param>
+        public ApplicationSingleInstancePerUser(string applicationName, ApplicationSingleInstanceMode mode = ApplicationSingleInstanceMode.CurrentUserSession)
         {
-            var name = applicationName + Environment.UserDomainName;
+            string name;
+            if (mode == ApplicationSingleInstanceMode.CurrentUserSession)
+                name = $"Local\\{applicationName}";
+            else if (mode == ApplicationSingleInstanceMode.AllSessionsOfCurrentUser)
+                name = $"Global\\{applicationName}{Environment.UserDomainName}";
+            else
+                name = $"Global\\{applicationName}";
+
             try
             {
-                //Grab mutex if it exists
-                _mutex = Mutex.OpenExisting(name);
+                bool created;
+                _event = new EventWaitHandle(false, EventResetMode.ManualReset, name, out created);
+                FirstInstance = created;
             }
-            catch (WaitHandleCannotBeOpenedException)
+            catch
             {
-                _firstInstance = true;
-            }
-
-            if (_mutex == null)
-            {
-                _mutex = new Mutex(false, name);
             }
         }
 
         public void Dispose()
         {
-            _mutex.Dispose();
+            _event.Dispose();
         }
     }
 }
