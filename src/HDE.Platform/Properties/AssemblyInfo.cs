@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HDE.Platform")]
-[assembly: AssemblyCopyright("Copyright © Siarhei Kuchuk 2011-2016")]
+[assembly: AssemblyCopyright("Copyright © Siarhei Kuchuk 2011-2016, 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: Guid("45145c54-6b88-4171-b956-e21c58ac1fc1")]
