@@ -6,13 +6,20 @@ using System.Windows.Forms;
 using System.Xml;
 using HDE.Platform.AspectOrientedFramework.Services;
 using HDE.Platform.Collections;
+using HDE.Platform.Logging;
 
 namespace HDE.Platform.AspectOrientedFramework.WinForms
 {
-    public abstract class ShellBaseController<TModel> : BaseController<TModel> 
+    public abstract class ShellBaseController<TModel, TMainWindow> : BaseController<TModel>
         where TModel : class, new()
+        where TMainWindow: Form, IMainFormView, new()
     {
         protected List<ITool> Tools { get; set; }
+
+        protected ShellBaseController()
+        {
+            RegisterShell();
+        }
 
         protected virtual void TearDownTools()
         {
@@ -32,8 +39,8 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
             commonServices.Add(typeof(IMessagePump), new MessagePump());
             var commonServicesAssign = commonServices.ToReadonlyDictionary();
 
-            var binFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configurationFile = Path.GetFileNameWithoutExtension(Assembly.GetCallingAssembly().Location) + ".xml";
+            var binFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var configurationFile = Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location) + ".xml";
             var configFile = Path.Combine(binFolder, configurationFile);
             var shellConfig = new XmlDocument();
             shellConfig.Load(configFile);
@@ -83,6 +90,54 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
                         menu.Click += (s, e) => tool.Activate();
                     }
                 }
+            }
+        }
+
+        protected virtual void RegisterShell()
+        {
+            UiFactory.Register<IMainFormView, TMainWindow>();
+        }
+
+        protected virtual IMainFormView CreateShell()
+        {
+            var type = UiFactory.Get(typeof(IMainFormView));
+            var result = Activator.CreateInstance(type);
+            var typedResult = (IMainFormView)result;
+
+            typedResult.SetController(this);
+
+            return typedResult;
+        }
+
+        public virtual void Run()
+        {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => ReportIssue(Log, e.ExceptionObject);
+            Application.ThreadException += (s, e) => ReportIssue(Log, e.Exception);
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            var result = CreateShell();
+            Configure(result);
+            result.SetController(this);
+            Application.Run((Form)result);
+            ((Form)result).FormClosing += OnMainWindowClosed;
+        }
+
+        private void OnMainWindowClosed(object sender, FormClosingEventArgs e)
+        {
+            TearDownTools();
+
+            ((Form)sender).FormClosing -= OnMainWindowClosed;
+        }
+
+        private static void ReportIssue(ILog log, object unhandledException)
+        {
+            var typedExc = unhandledException as Exception;
+            if (typedExc != null)
+            {
+                log.Error(typedExc);
+                MessageBox.Show(typedExc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -6,5 +6,6 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
     {
         TabControl TabControl { get; }
         MenuStrip MainMenu { get; }
+        void SetController(object controller);
     }
 }
