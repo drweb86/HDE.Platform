@@ -54,7 +54,8 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
                         new[] { ", " },
                         StringSplitOptions.RemoveEmptyEntries);
 
-                var tool = (ITool)Activator.CreateInstance(activatorInfo[1], activatorInfo[0]).Unwrap();
+                var loadedToolAssembly = Assembly.LoadFile(Path.Combine(binFolder, $"{activatorInfo[1]}.dll"));
+                var tool = (ITool)loadedToolAssembly.CreateInstance(activatorInfo[0]);
                 Tools.Add(tool);
 
                 tool.Assign(Log,
