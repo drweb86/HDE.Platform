@@ -91,6 +91,11 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
                         menu.Click += (s, e) => tool.Activate();
                     }
                 }
+
+                if (toolConfig.Attributes["preloaded"]?.Value == "true")
+                {
+                    tool.Activate();
+                }
             }
         }
 
