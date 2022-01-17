@@ -61,7 +61,7 @@ namespace HDE.Platform.Logging
 		{
             LogHeader = logHeader;
             LogExtension = ".html";
-            LogFooter = "</dody>\r\n</html>";
+            LogFooter = "</body>\r\n</html>";
             _logsFolder = logsFolder;
         	if (string.IsNullOrEmpty(logsFolder))
         	{
@@ -69,11 +69,16 @@ namespace HDE.Platform.Logging
         	}
         }
 
+        public HtmlLog(string logsFolder)
+            : this (logsFolder, "<html><head></head><body>")
+        {
+        }
+
         #endregion
 
         #region Protected Methods
 
-		protected override void OpenInternal()
+        protected override void OpenInternal()
 		{
             if (!Directory.Exists(_logsFolder))
             {
