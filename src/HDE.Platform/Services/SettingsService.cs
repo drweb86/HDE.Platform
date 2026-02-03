@@ -14,7 +14,7 @@ namespace HDE.Platform.Services
     {
         #region Fields
 
-        private const string DefaultFileName = "Settings.xml";
+        private const string _defaultFileName = "Settings.xml";
         private ILog _log;
         private string _settingsFile;
 
@@ -28,7 +28,7 @@ namespace HDE.Platform.Services
         /// <param name="log">Opened log.</param>
         /// <param name="settingsFolder">Settings folder. If it doesn't exist it will be created.</param>
         /// <param name="fileName">File name.</param>
-        public SettingsService(ILog log, string settingsFolder, string fileName = DefaultFileName)
+        public SettingsService(ILog log, string settingsFolder, string fileName = _defaultFileName)
         {
             Initialize(log, settingsFolder, fileName);
         }
@@ -45,7 +45,7 @@ namespace HDE.Platform.Services
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location),
                     "Debug"),
-                DefaultFileName);
+                _defaultFileName);
 #else
 
             Initialize(log, 
@@ -63,8 +63,7 @@ namespace HDE.Platform.Services
 
         private void Initialize(ILog log, string settingsFolder, string settingsFileName)
         {
-            if (log == null)
-                throw new ArgumentNullException(nameof(log));
+            ArgumentNullException.ThrowIfNull(log);
             if (!log.IsOpened)
                 throw new ArgumentException("Log was not opened", nameof(log));
             if (string.IsNullOrWhiteSpace(settingsFolder))

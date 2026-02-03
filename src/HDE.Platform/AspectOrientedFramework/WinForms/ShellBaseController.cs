@@ -34,9 +34,11 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
 
         protected virtual void Configure(IMainFormView mainFormView)
         {
-            Tools = new List<ITool>();
-            var commonServices = new Dictionary<object, object>();
-            commonServices.Add(typeof(IMessagePump), new MessagePump());
+            Tools = [];
+            var commonServices = new Dictionary<object, object>
+            {
+                { typeof(IMessagePump), new MessagePump() }
+            };
             var commonServicesAssign = commonServices.ToReadonlyDictionary();
 
             var binFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -51,7 +53,7 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
                 var activatorInfo = toolConfig
                     .Attributes["tool"].Value
                     .Split(
-                        new[] { ", " },
+                        [", "],
                         StringSplitOptions.RemoveEmptyEntries);
 
                 var loadedToolAssembly = Assembly.LoadFile(Path.Combine(binFolder, $"{activatorInfo[1]}.dll"));
@@ -64,7 +66,7 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
                     mainFormView.MainMenu,
                     commonServicesAssign);
 
-                var menuPaths = toolConfig.Attributes["addToMenu"].Value.Split(new[] { '/' });
+                var menuPaths = toolConfig.Attributes["addToMenu"].Value.Split(['/']);
                 var rootItemCollection = mainFormView.MainMenu.Items;
                 for (int i = 0; i < menuPaths.Length; i++)
                 {
@@ -79,8 +81,10 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
 
                     if (menu == null)
                     {
-                        menu = new ToolStripMenuItem(menuPaths[i]);
-                        menu.Name = menuPaths[i];
+                        menu = new ToolStripMenuItem(menuPaths[i])
+                        {
+                            Name = menuPaths[i]
+                        };
 
                         rootItemCollection.Add(menu);
                     }
@@ -139,8 +143,7 @@ namespace HDE.Platform.AspectOrientedFramework.WinForms
 
         private static void ReportIssue(ILog log, object unhandledException)
         {
-            var typedExc = unhandledException as Exception;
-            if (typedExc != null)
+            if (unhandledException is Exception typedExc)
             {
                 log.Error(typedExc);
                 MessageBox.Show(typedExc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
